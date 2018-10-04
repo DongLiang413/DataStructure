@@ -202,7 +202,7 @@ public class EasyBufferedImage extends BufferedImage {
      * Returns an EasyBufferedImage object that is a gray-scale copy
      * of the calling image.
      * <p>
-     * @param  None
+     * @param  none
      * @return      an EasyBufferedImage that is a gray-scale copy of the caller.
      */
     public EasyBufferedImage copyToGrayScale() {
