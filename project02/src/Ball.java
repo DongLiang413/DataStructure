@@ -1,58 +1,64 @@
+import java.awt.*;
 import java.lang.Boolean;
 
-public class Ball extends Circle {
-    double speedx;
-    double speedy;
-    double units; // time
-
-
-    public Ball(double x, double y, double r, double speedx,double speedy){
+public class Ball extends Circle{
+    private double speedX;
+    private double speedY;
+    public Ball(double x,double y,double r, Color color){
         super(x,y,r);
-        this.speedx=speedx;
-        this.speedy=speedy;
-    }
-    public void setSpeedX(double speedx){
-        this.speedx=speedx;
+        this.setColor(color);
     }
 
-    public void setSpeedY(double speedy){
-        this.speedy=speedy;
+    public void setSpeedX(double speedX) {
+        this.speedX = speedX;
     }
+
+    public void setSpeedY(double speedY){
+        this.speedY=speedY;
+        }
 
     public double getSpeedX(){
-        return speedx;
+        return speedX;
+        }
+
+    public double getSpeedY() {
+        return speedY;
     }
 
-    public double getSpeedY(){
-        return speedy;
+    public void updatePosition(double units){
+        this.x=this.x+speedX*units;
+        this.y=this.y+speedY*units;
     }
 
-    public void updatePosition(double units) {
-        this.x=this.x+speedx*units;
-        this.y=this.y+speedy*units;
-    }
-    // under what condition a collision will happen
     public Boolean intersect(Ball other){
-        if (this.x==other.getXPos() || this.y == other.getYPos()) {
+        double dis=Math.sqrt((this.x-other.getXPos())*(this.x-other.getXPos())+ (this.y-other.getYPos())*(this.y-other.getYPos()));
+        if (dis<(this.r+other.getRadius())||dis==(this.r+other.getRadius())){
             return true;
         }
         else{
             return false;
         }
     }
-    // FIX Collision
+
     public void collide(Ball other){
-        if (intersect(other)) { // ?
-            double d = Math.sqrt((this.x-other.getXPos())*(this.x-other.getXPos())+(this.y-other.getYPos())*(this.y-other.getYPos()));
-            double changexd=(this.x-other.getXPos())/d;
-            double changeyd=(this.y-other.getYPos())/d;
-            if (d<(this.r + other.getRadius())){ // ? why we need this??
-                double newcolvelocity = this.speedx * changexd+this.speedy*changeyd;
-                double newnormvelocity = -1 * this.speedx * changeyd + this.speedy*changexd;
-                this.speedx = newcolvelocity * changexd-newnormvelocity * changeyd;
-                this.speedy = newcolvelocity * changeyd+newnormvelocity * changexd;
-            }
+        if (intersect(other)){
+            double dis=Math.sqrt((this.x-other.getXPos())*(this.x-other.getXPos())+ (this.y-other.getYPos())*(this.y-other.getYPos()));
+            //find unit vectors corresponding to collision coordinate system
+            double changeXd=(this.x-other.getXPos())/dis;
+            double changeYd=(this.y-other.getYPos())/dis;
+            //redefine the velocity according to collision coordinate system
+            double colvelocity1=this.speedX*changeXd+this.speedY*changeYd;
+            double normvelocity1= -this.speedX*changeYd+this.speedY*changeXd;
+            double colvelocity2=other.speedX*changeXd+other.speedY*changeYd;
+            double normvelocity2= -other.speedX*changeYd+other.speedY*changeXd;
+            //compute the post-collision velocities of the balls by swapping the new collision velocities of each ball
+            double newcolvelocity1=colvelocity2;
+            double newcolvelocity2=colvelocity1;
+            // get the final speed of both balls
+            this.speedX = newcolvelocity1*changeXd-normvelocity1*changeYd;
+            this.speedY = newcolvelocity1*changeYd+normvelocity1*changeXd;
+            other.speedX = newcolvelocity2*changeXd-normvelocity2*changeYd;
+            other.speedY = newcolvelocity2*changeYd+normvelocity2*changeXd;
         }
     }
-
 }
