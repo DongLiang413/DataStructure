@@ -4,6 +4,7 @@ import java.lang.Boolean;
 public class Ball extends Circle{
     private double speedX;
     private double speedY;
+
     public Ball(double x,double y,double r, Color color){
         super(x,y,r);
         this.setColor(color);

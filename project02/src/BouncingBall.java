@@ -42,6 +42,7 @@ public class BouncingBall extends AnimationFrame{
 	
 	public static void main(String[] args){
 		BouncingBall bb= new BouncingBall(800,800,"Bouncing Ball");
+//		BouncingBall bb2= new BouncingBall(800,800,"Bouncing Ball");
 		bb.start();
 	}
 	
