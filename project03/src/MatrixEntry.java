@@ -21,6 +21,14 @@ public class MatrixEntry {
             nextRow = el;
     }
 
+
+    public void setNextCol(MatrixEntry el){
+        if (el.getRow() != this.getRow())
+            System.out.println("Not the next col");
+        else
+            nextCol = el;
+    }
+
     public MatrixEntry getNextRow(){
         if (this.nextRow.getColumn() == this.getColumn())
             return nextRow;
@@ -28,13 +36,6 @@ public class MatrixEntry {
             System.out.println("not in the same column");
             return null;
         }
-    }
-
-    public void setNextCol(MatrixEntry el){
-        if (el.getRow() != this.getRow())
-            System.out.println("Not the next col");
-        else
-            nextCol = el;
     }
 
     public MatrixEntry getNextCol(){
