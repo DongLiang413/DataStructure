@@ -18,8 +18,6 @@ public class BouncingBall extends AnimationFrame{
 	private static final int COLLISION_BUCKET_WIDTH = 20;
     private int saveCounter=0;
 
-
-	
 	public BouncingBall(){
 		super();
 		ballX=randdouble(BORDER,getWidth()-BORDER);
@@ -60,8 +58,7 @@ public class BouncingBall extends AnimationFrame{
 		if ( ballY<BORDER || ballY+ballSize>getWidth()-BORDER ){
 			ballYSpeed*=-1;
 		}
-		
-		
+
 		/* In your screen saver implementation, you will need to handle collisions with
 		   the border as well as collisions between all pairs of balls. You will also need to 
 		   log any collisions using the CollisionLogger class. For example, the following code
@@ -106,10 +103,9 @@ public class BouncingBall extends AnimationFrame{
 		return (Math.random()*(max-min)+min);
 	}
 
-    
+
      protected void processKeyEvent(KeyEvent e) {
         int keyCode = e.getKeyCode();
-        
         /* This captures the user pressing the "p" key and prints out the current collisionLog to an image. 
         	You can use this directly in your implementation. Add other cases to the if/else statement to
         	handle other key events.
@@ -123,8 +119,6 @@ public class BouncingBall extends AnimationFrame{
                 exc.printStackTrace();
                 System.exit(1);
             }
-            
         }
      }
-    
 }

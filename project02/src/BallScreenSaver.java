@@ -1,3 +1,4 @@
+
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
@@ -6,54 +7,51 @@ import java.util.GregorianCalendar;
 public class BallScreenSaver extends AnimationFrame {
 
     private int numOfBalls;
-    private CollisionLogger collisionLogger;
+    private CollisionLogger collisionLogger = new CollisionLogger(800,800,40);
     public final int BORDER = 30;
-
-    // 2 balls condition
-    Ball b1, b2;
     private Ball[] ballArr;
-//    BouncingBall b1 = new BouncingBall();
-//    BouncingBall b2 = new BouncingBall();
 
     /* These are data members for managing the collision logging, which
        you should also use in your class. */
     private static final int COLLISION_BUCKET_WIDTH = 20;
     private int saveCounter=0;
 
-    public BallScreenSaver(int w, int h, String name, int numofballs) {
+    public BallScreenSaver(int w, int h, String name, int numOfBalls) {
         super(w, h, name);
-        this.numOfBalls = numofballs;
-         b1 = generateBall();
-         b2 = generateBall();
-//
-//        int i = 0;
-//        ballArr = new Ball[numofballs];
-//        while (i < numofballs) {
-//            ballArr[i] = generateBall();
-//            i++;
-//        }
+        this.numOfBalls = numOfBalls;
 
+        int i = 0;
+        this.ballArr = new Ball[numOfBalls];
+        while (i < numOfBalls) {
+            ballArr[i] = generateBall();
+            i++;
+        }
+        // set one ball with red color
+        int j=randInt(0,ballArr.length-1);
+        ballArr[j].setColor(Color.RED);
     }
     // generate a new ball according to the given input : numofballs
     public Ball generateBall() {
-        Ball newBall = new Ball(randdouble(BORDER,getWidth()-BORDER), randdouble(BORDER,getWidth()-BORDER), 40, Color.RED);
-        newBall.setSpeedX(randdouble(290, 310));
-        newBall.setSpeedY(randdouble(290, 310));
-        newBall.setColor(new Color(randInt(0, 255), randInt(0, 255), randInt(0, 255)));
+        Ball newBall = new Ball(randdouble(BORDER,getWidth()-BORDER), randdouble(BORDER,getWidth()-BORDER), 10, Color.GREEN);
+        newBall.setSpeedX(randdouble(90, 150));
+        newBall.setSpeedY(randdouble(90, 150));
+
         return newBall;
     }
 
     // take in all the balls.
     public void action() {
-        boundaryTest(b1);
-        boundaryTest(b2);
 
-        collisionTest(b1, b2);
         // test boundary collision for each ball
-//        for (int i = 0; i < ballArr.length; i++) {
-//            boundaryTest(ballArr[i]);
-//        }
+        for (int i = 0; i < ballArr.length; i++) {
+            boundaryTest(ballArr[i]);
+        }
         // test ball-ball collision, loop for C(n ,2)
+        for (int i = 0; i < ballArr.length; i++) {
+            for (int j = i+1; j < ballArr.length; j++){
+                collisionTest(ballArr[i],ballArr[j]);
+            }
+        }
         // collisionTest(bi, bj) // O(n^2)
 
 		/* In your screen saver implementation, you will need to handle collisions with
@@ -61,22 +59,26 @@ public class BallScreenSaver extends AnimationFrame {
 		   log any collisions using the CollisionLogger class. For example, the following code
 		   updates the state of two ball objects to indicate that they have collided and records
 		   this collision in the collisionLogger.
-
 		   if (ball1.intersect(ball2)) {
 		   		ball1.collide(ball2);
 		   		collisionLogger.collide(ball1,ball2);
 		   		}
 
-
 		   Note that the processKeyEvent method implemented below will handle printing the collision log
 		   when the "p" key is pressed.
 		  */
+        for (int i = 0; i < ballArr.length; i++) {
+            for (int j = i+1; j < ballArr.length; j++){
+                if (ballArr[i].intersect(ballArr[j])){
+                    ballArr[i].collide(ballArr[j]);
+                    collisionLogger.collide(ballArr[i],ballArr[j]);
+                }
+            }
+        }
     }
 
     public void boundaryTest(Ball b) {
         //This method is called once every frame to update the state of the BouncingBall.
-
-
         //update both X and Y positions
         double incX = b.getSpeedX() / getFPS();
         double incY = b.getSpeedY() / getFPS();
@@ -99,13 +101,11 @@ public class BallScreenSaver extends AnimationFrame {
     }
 
     public void collisionTest(Ball b1, Ball b2) {
-        // double check collide() in BALL CLASS
         if (b1.intersect(b2)) {
-            b1.setColor(new Color(randInt(0, 255), randInt(0, 255), randInt(0, 255)));
-            b2.setColor(new Color(randInt(0, 255), randInt(0, 255), randInt(0, 255)));
+            b1.setColor(Color.RED);
+            b2.setColor(Color.RED);
         }
         b1.collide(b2);
-
     }
 
     public void draw(Graphics g) {
@@ -116,15 +116,11 @@ public class BallScreenSaver extends AnimationFrame {
         g.fillRect(0,0,getWidth(),getHeight());
         g.setColor(Color.WHITE);
         g.drawRect(BORDER,BORDER,getWidth()-BORDER*2,getHeight()-BORDER*2);
-        g.setColor(b1.getColor());
-        g.fillOval((int)b1.getXPos(), (int)b1.getYPos(), (int)b1.getRadius(), (int)b1.getRadius());
-        g.setColor(b2.getColor());
-        g.fillOval((int)b2.getXPos(), (int)b2.getYPos(), (int)b2.getRadius(), (int)b2.getRadius());
-//        g.fillOval((int)ballX, (int)ballY, ballSize, ballSize);
-//        for (int i = 0; i < ballArr.length; i++) {
-//            g.setColor(ballArr[i].getColor());
-//            g.fillOval(ballArr[i].getXPos(), ballArr[i].getYPos(), ballArr[i].getRadius(), ballArr[i].getRadius());
-//        }
+        for (int i = 0; i< ballArr.length; i++){
+            g.setColor(ballArr[i].getColor());
+            g.fillOval((int)ballArr[i].getXPos(), (int)ballArr[i].getYPos(), (int)ballArr[i].getRadius(), (int)ballArr[i].getRadius());
+        }
+
     }
 
     public void processKeyEvent(KeyEvent e) {
@@ -144,6 +140,21 @@ public class BallScreenSaver extends AnimationFrame {
                 System.exit(1);
             }
         }
+
+        // reduce speed when press left key
+        if (e.getID() == KeyEvent.KEY_PRESSED && keyCode == KeyEvent.VK_LEFT){
+            for (int i = 0; i < ballArr.length; i++) {
+                ballArr[i].setSpeedX(0.9 * ballArr[i].getSpeedX());
+                ballArr[i].setSpeedY(0.9 * ballArr[i].getSpeedY());
+            }
+        }
+        // increase speed when press right key
+        if (e.getID() == KeyEvent.KEY_PRESSED && keyCode == KeyEvent.VK_RIGHT){
+            for (int i = 0; i < ballArr.length; i++) {
+                ballArr[i].setSpeedX(1.1 * ballArr[i].getSpeedX());
+                ballArr[i].setSpeedY(1.1 * ballArr[i].getSpeedY());
+            }
+        }
     }
 
     public int randInt(int min, int max){
@@ -157,7 +168,7 @@ public class BallScreenSaver extends AnimationFrame {
     }
 
     public static void main(String[] args){
-        BallScreenSaver ballScreenSaver= new BallScreenSaver(800, 800, "BallScreenSaver", 2);
+        BallScreenSaver ballScreenSaver= new BallScreenSaver(800, 800, "BallScreenSaver", 15);
         ballScreenSaver.start();
     }
 

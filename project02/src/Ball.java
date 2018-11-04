@@ -1,3 +1,6 @@
+// Wenqing Wu     wuxx1734@umn.edu; 5328675
+// Yangjiawen Xu     xuxx1262@umn.edu; 5332558
+
 import java.awt.*;
 import java.lang.Boolean;
 
